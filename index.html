@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title> Conversion de devises </title>
+
+        <style>
+
+            #ConverterContainer
+            {
+                width: 500px;
+                height: 300px;
+                margin: 0 auto;
+                border: 5px dotted black;
+
+                text-align: center;
+            }
+            #fromAmount, #toAmount
+            {
+                text-align: right;
+            }
+            #ConversionBlock
+            {
+                margin: 0 auto;
+            }
+
+        </style>
+
+
+    </head>
+
+    <body onload="ToConvertCurrency();">
+
+        <div id="ConverterContainer">
+            <h1> Conversion de devises </h1>
+            <table id="ConversionBlock"> 
+                <tr> <!-- Valeur à entrer par l'utilisateur &  Devise à sélectionner : par l'utilisateur-->
+                    <td> <input id="fromAmount" type="text" size="25" enabled value="1,0000"> </td> 
+                    <td>
+                        <select id="from" onchange="ToConvertCurrency();">
+                            <option value="EUR"> Euros € (EUR) </option>
+                            <option value="USD"> Dollar U.S $ (USD) </option>
+                            <option value="JPY"> Yen Japonais (JPY) </option>
+                            <option value="CNY"> Yuan Chinoise (CNY) </option>
+                            <option value="RUB"> Rouble Russe (RUB) </option>
+                            <option value="IDR"> Roupie Indonésienne (IDR) </option>
+                            <option value="AUD"> Dollar Australien (AUD) </option>
+                            <option value="ZAR"> Rand d'Afrique du Sud (ZAR) </option>
+                            <option value="NZD"> Dollar de Nouvelle-Zélande (NZD) </option>
+                            <option value="SGD"> Dollar de Singapour (SGD) </option>
+                        </select>
+                    </td>
+                </tr>
+
+                <tr> <!-- Affichage de la conversion & Affichage/Champ de sélection de la devise de la conversion -->
+                    <td> <input id="toAmount" type="text" size="25" disabled> </td> 
+                    <td>
+                        <select id="to" onchange="ToConvertCurrency();">
+                            <option value="USD"> Dollar U.S $ (USD) </option>
+                            <option value="EUR"> Euros € (EUR) </option>
+                            <option value="JPY"> Yen Japonais (JPY) </option>
+                            <option value="CNY"> Yuan Chinoise (CNY) </option>
+                            <option value="RUB"> Rouble Russe (RUB) </option>
+                            <option value="IDR"> Roupie Indonésienne (IDR) </option>
+                            <option value="AUD"> Dollar Australien (AUD) </option>
+                            <option value="ZAR"> Rand d'Afrique du Sud (ZAR) </option>
+                            <option value="NZD"> Dollar de Nouvelle-Zélande (NZD) </option>
+                            <option value="SGD"> Dollar de Singapour (SGD) </option>
+                        </select>
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+
+        <script>
+
+            function ToConvertCurrency()
+            {
+                var from = document.getElementById("from").value;
+                var to = document.getElementById("to").value;
+
+                // ---> https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/readyState
+                var xmlhttp = new XMLHttpRequest();
+
+                var url = "https://api.exchangeratesapi.io/latest?symbols=" + from + "," + to;
+
+                xmlhttp.open("GET", url, true);
+                xmlhttp.send();
+                xmlhttp.onreadystatechange = function()
+                {
+                    if(xmlhttp.readyState == 4 && xmlhttp.status == 200)
+                    {
+                        var result = xmlhttp.responseText;
+                        
+                        var jsResult = JSON.parse(result);
+
+                        var baseAmount = jsResult.rates[to]/jsResult.rates[from];
+                        var amount = document.getElementById("fromAmount").value;
+                        document.getElementbyId("toAmount").value = baseAmount * amount . toFixed(4);
+                    }
+                }
+
+            }
+
+        </script>
+
+    </body>
+
+
+
+</html>
